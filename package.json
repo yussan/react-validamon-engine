@@ -1,0 +1,31 @@
+{
+  "name": "react-validamon-engine",
+  "version": "0.0.1",
+  "description": "Engine of React Validamon, a react validator library",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yussan/react-validamon-engine.git"
+  },
+  "keywords": [
+    "react",
+    "react",
+    "validator",
+    "form",
+    "validator"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yussan/react-validamon-engine/issues"
+  },
+  "homepage": "https://github.com/yussan/react-validamon-engine#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0"
+  }
+}
