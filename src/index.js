@@ -1,11 +1,6 @@
-// helper to handle form input validation
-
-// global variable to save validation status
-export let validator = {};
-
-export function resetValidator() {
-  validator = {};
-}
+import generateResult from "./modules/generateResult";
+import extraRulesValidation from "./modules/extraRulesValidation";
+import handleFileValidator from "./modules/fileValidation";
 
 /**
  * function to validate on change input form
@@ -21,8 +16,8 @@ export function validate(props = {}, file = {}) {
     required,
     type,
     errorMessage = {},
+    label,
   } = props;
-  const label = props.label ? props.label.toLowerCase() : "";
   const { value } = data;
 
   if (required && (!value || value == 0)) {
@@ -30,45 +25,32 @@ export function validate(props = {}, file = {}) {
     return generateResult(
       props,
       false,
-      errorMessage.required || `Pilih ${label || name} terlebih dahulu, ya!`
+      // errorMessage.required || `Format ${label || name} Salah, Cek Kembali Ya!`
+      `${label || name} Wajib Diisi`
     );
   } else if (min && value.length < min) {
     //valdate min character
     return generateResult(
       props,
       false,
-      `${label || name} kurang. Minimal ${min} karakter, ya!`
+      `Karakter Kurang. Minimal ${min} Karakter Ya!`
     );
-  } else if (max && value.length > max) {
+  } else if (max && value && value.length > max) {
     //validate max character
     return generateResult(
       props,
       false,
-      `${label || name} kelebihan. Maksimal ${max} karakter, ya!`
+      `Karakter Kelebihan. Maksimal ${max} Karakter Ya!`
     );
   } else if (type == "number" && !parseInt(value)) {
     //validate input type number
     return generateResult(props, false, "inputan bukan angka");
-  } else if (type == "link" && !value.includes("http")) {
-    //validate input type link
-    return generateResult(
-      props,
-      false,
-      "harus link valid yang dilengkapi dengan, http:// atau https://"
-    );
-  } else if (
-    type === "email" &&
-    /(.+)@(.+){2,}\.(.+){2,}/.test(value) === false
-  ) {
-    //validate input type email
-    return generateResult(
-      props,
-      false,
-      "Masukan email dengan format yang sesuai, ya!"
-    );
   } else if (type == "file") {
     //validate input type file
     return handleFileValidator(props, file);
+  } else if (props.extraRules && props.extraRules.length > 0) {
+    // added extra rules
+    return extraRulesValidation(props);
   }
 
   return generateResult(props, true);
@@ -83,50 +65,11 @@ export function validationChecker(inputs = [], values = {}) {
   let is_valid = true;
   Object.keys(inputs).map((n) => {
     if (is_valid) {
-      is_valid = Boolean(inputs[n].validation && inputs[n].validation.is_valid);
+      is_valid = Boolean(
+        typeof inputs[n].validation !== "undefined" &&
+          inputs[n].validation.is_valid
+      );
     }
   });
   return is_valid;
-}
-
-function handleFileValidator(props, file = {}) {
-  const { max, accept } = props;
-  if (file.size > max) {
-    //melebihi max size
-    return generateResult(
-      props,
-      false,
-      `Ukuran gambar yang kamu pilih lebih dari ${
-        max / 1000000
-      } MB. Cek kembali, ya!`
-    );
-  } else if (props.required && !value) {
-    return generateResult(props, false, `${props.name} wajib diisi`);
-  } else if (accept.includes("*.") && file.name) {
-    // validate based on specific accepted extension
-    // check upload extensions
-    const fileNameArr = file.name.split(".");
-    const fileExtension = fileNameArr[fileNameArr.length - 1];
-    const acceptExtension = props.accept.replace(".*", "");
-
-    if (!acceptExtension.includes(fileExtension)) {
-      // file not accepted
-      return generateResult(
-        props,
-        false,
-        `File bukan ${acceptExtension}, silahkan coba yang lain`
-      );
-    }
-  }
-  return generateResult(props, true);
-}
-
-function generateResult(props, is_valid = true, message = "") {
-  const { name } = props;
-  const result = {
-    is_valid,
-    message,
-  };
-  validator[name + "_validate"] = result;
-  return result;
 }

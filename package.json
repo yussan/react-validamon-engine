@@ -1,6 +1,6 @@
 {
   "name": "react-validamon-engine",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Engine of React Validamon, a react validator library",
   "main": "dist/index.js",
   "scripts": {
@@ -18,8 +18,8 @@
     "form",
     "validator"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "yussan",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/yussan/react-validamon-engine/issues"
   },
